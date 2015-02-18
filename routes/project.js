@@ -5,6 +5,7 @@ exports.projectInfo = function(req, res) { 
 
   // query for the specific project and
   // call the following callback
+  models.Project.find({_id: projectID}).exec(afterQuery);  
 
   function afterQuery(err, projects) {
     if(err) console.log(err);
@@ -15,9 +16,15 @@ exports.projectInfo = function(req, res) { 
 exports.addProject = function(req, res) {
   var form_data = req.body;
   console.log(form_data);
-
+  var newPost = new models.Project(form_data);
   // make a new Project and save it to the DB
   // YOU MUST send an OK response w/ res.send();
+  newPost.save(afterSaving);
+  function afterSaving(err){
+    res.redirect('/');
+    res.send();
+  }
+
 }
 
 exports.deleteProject = function(req, res) {
@@ -25,4 +32,8 @@ exports.deleteProject = function(req, res) {
 
   // find the project and remove it
   // YOU MUST send an OK response w/ res.send();
+  models.Project.find({_id: projectID}).remove().exec(afterRemoving);
+  function afterRemoving(err0){
+    res.send();
+  }
 }
